@@ -14,9 +14,13 @@ onMounted(() => {
 
 // Redireciona para a tela de detalhes
 const abrirDetalhes = (pokemon) => {
-  // Obtém o ID do Pokémon a partir da URL da API
-  const id = pokemon.url.split('/').filter(Boolean).pop();
+  const id = pokemon.url.split('/').filter(Boolean).pop(); // Obtém o ID do Pokémon
   router.push(`/pokemon/${id}`);
+};
+
+// Carregar mais Pokémon
+const carregarMais = () => {
+  pokemonStore.fetchPokemonList(pokemonStore.pokemonList.length + 20);
 };
 </script>
 
@@ -36,9 +40,13 @@ const abrirDetalhes = (pokemon) => {
           :alt="pokemon.name"
           class="pokemon-image"
         />
+        <p class="pokemon-id">#{{ index + 1 }}</p>
         <p class="pokemon-name">{{ pokemon.name }}</p>
       </div>
     </div>
+
+    <!-- Botão Carregar Mais -->
+    <button class="load-more" @click="carregarMais">Carregar Mais</button>
   </div>
 </template>
 
@@ -89,12 +97,38 @@ const abrirDetalhes = (pokemon) => {
   height: 80px;
 }
 
+/* ID do Pokémon */
+.pokemon-id {
+  font-size: 0.9rem;
+  color: #666;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
 /* Nome do Pokémon */
 .pokemon-name {
   font-size: 1.1rem;
   font-weight: bold;
   text-transform: capitalize;
-  margin-top: 8px;
+  margin-top: 4px;
   color: #444;
+}
+
+/* Botão "Carregar Mais" */
+.load-more {
+  margin-top: 20px;
+  padding: 10px 20px;
+  font-size: 1rem;
+  font-weight: bold;
+  color: white;
+  background-color: #ff4757;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.load-more:hover {
+  background-color: #e84118;
 }
 </style>
