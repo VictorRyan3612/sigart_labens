@@ -24,77 +24,58 @@ const voltar = () => {
 </script>
 
 <template>
-  <!-- Botão de Voltar -->
-  <button
-      @click="voltar"
-      class="mt-6 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 transition"
-    >
-      Voltar
-    </button>
-  <div v-if="pokemon" class="container mx-auto p-6 text-center">
-    <h1 class="text-4xl font-bold text-blue-600 capitalize">{{ pokemon.name }}</h1>
+  
+  <div v-if="pokemon" class="details-container">
+    <!-- Botão de Voltar -->
+    <button @click="voltar" class="back-button">Voltar</button>
+    <h1 class="pokemon-name">{{ pokemon.name }}</h1>
 
     <!-- Imagem do Pokémon -->
     <img
       v-if="pokemon.sprites"
       :src="pokemon.sprites.front_default"
       :alt="pokemon.name"
-      class="mx-auto my-4 w-40 h-40"
+      class="pokemon-image"
     />
 
     <!-- Tipos do Pokémon -->
-    <div class="flex justify-center space-x-2">
+    <div class="pokemon-types">
       <span
         v-for="type in pokemon.types"
         :key="type.type.name"
-        class="px-3 py-1 rounded text-white text-sm font-bold"
-        :class="{
-          'bg-red-500': type.type.name === 'fire',
-          'bg-blue-500': type.type.name === 'water',
-          'bg-green-500': type.type.name === 'grass',
-          'bg-yellow-500': type.type.name === 'electric',
-          'bg-gray-500': type.type.name === 'rock',
-          'bg-purple-500': type.type.name === 'poison',
-          'bg-pink-500': type.type.name === 'fairy',
-          'bg-brown-500': type.type.name === 'ground',
-          'bg-indigo-500': type.type.name === 'ghost',
-          'bg-gray-700': type.type.name === 'steel',
-          'bg-gray-400': type.type.name === 'normal'
-        }"
+        class="type-badge"
+        :class="type.type.name"
       >
         {{ type.type.name }}
       </span>
     </div>
 
     <!-- Informações Básicas -->
-    <p class="text-gray-700 mt-4">Altura: {{ pokemon.height / 10 }} m</p>
-    <p class="text-gray-700">Peso: {{ pokemon.weight / 10 }} kg</p>
+    <div class="info-box">
+      <p>Altura: <span>{{ pokemon.height / 10 }} m</span></p>
+      <p>Peso: <span>{{ pokemon.weight / 10 }} kg</span></p>
+    </div>
 
     <!-- Habilidades -->
-    <div class="mt-4">
-      <h2 class="text-xl font-semibold text-gray-800">Habilidades</h2>
-      <ul class="mt-2">
-        <li
-          v-for="ability in pokemon.abilities"
-          :key="ability.ability.name"
-          class="text-gray-600 capitalize"
-        >
+    <div class="section">
+      <h2>Habilidades</h2>
+      <ul>
+        <li v-for="ability in pokemon.abilities" :key="ability.ability.name">
           {{ ability.ability.name }}
         </li>
       </ul>
     </div>
 
     <!-- Stats Base -->
-    <div class="mt-4">
-      <h2 class="text-xl font-semibold text-gray-800">Stats Base</h2>
-      <div class="grid grid-cols-2 gap-2 mt-2">
-        <div
-          v-for="stat in pokemon.stats"
-          :key="stat.stat.name"
-          class="flex justify-between bg-gray-200 p-2 rounded"
-        >
-          <span class="capitalize">{{ stat.stat.name }}</span>
-          <span class="font-bold">{{ stat.base_stat }}</span>
+    <div class="section">
+      <h2>Stats Base</h2>
+      <div class="stats-grid">
+        <div v-for="stat in pokemon.stats" :key="stat.stat.name" class="stat">
+          <span class="stat-name">{{ stat.stat.name }}</span>
+          <div class="progress-bar">
+            <div class="progress" :style="{ width: stat.base_stat + '%' }"></div>
+          </div>
+          <span class="stat-value">{{ stat.base_stat }}</span>
         </div>
       </div>
     </div>
@@ -102,7 +83,172 @@ const voltar = () => {
     
   </div>
 
-  <div v-else class="text-center text-gray-500">
+  <div v-else class="loading">
     <p>Carregando detalhes...</p>
   </div>
 </template>
+
+<style scoped>
+/* Estilos gerais */
+.details-container {
+  max-width: 500px;
+  margin: 30px auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+
+.pokemon-name {
+  font-size: 2rem;
+  font-weight: bold;
+  text-transform: capitalize;
+  color: #333;
+}
+
+.pokemon-image {
+  width: 150px;
+  height: 150px;
+  margin: 10px auto;
+}
+
+/* Tipos do Pokémon */
+.pokemon-types {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.type-badge {
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  font-weight: bold;
+  color: #fff;
+  text-transform: capitalize;
+}
+
+/* Cores para cada tipo */
+.fire { background-color: #F08030; }
+.water { background-color: #6890F0; }
+.grass { background-color: #78C850; }
+.electric { background-color: #F8D030; color: #333; }
+.rock { background-color: #B8A038; }
+.poison { background-color: #A040A0; }
+.fairy { background-color: #EE99AC; color: #333; }
+.ground { background-color: #E0C068; color: #333; }
+.ghost { background-color: #705898; }
+.steel { background-color: #B8B8D0; color: #333; }
+.normal { background-color: #A8A878; }
+
+/* Informações básicas */
+.info-box {
+  display: flex;
+  justify-content: space-around;
+  background: #f5f5f5;
+  padding: 10px;
+  border-radius: 8px;
+  margin: 10px 0;
+}
+
+.info-box p {
+  font-size: 1rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.info-box span {
+  color: #555;
+  font-weight: normal;
+}
+
+/* Seções gerais */
+.section {
+  margin-top: 20px;
+}
+
+.section h2 {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #444;
+}
+
+.section ul {
+  list-style: none;
+  padding: 0;
+}
+
+.section li {
+  font-size: 1rem;
+  color: #555;
+  background: #f0f0f0;
+  padding: 8px;
+  border-radius: 5px;
+  margin: 5px 0;
+}
+
+/* Stats */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 10px;
+}
+
+.stat {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f5f5f5;
+  padding: 8px;
+  border-radius: 5px;
+}
+
+.stat-name {
+  text-transform: capitalize;
+  font-weight: bold;
+  color: #333;
+}
+
+.progress-bar {
+  flex: 1;
+  height: 8px;
+  background: #ddd;
+  border-radius: 5px;
+  margin: 0 10px;
+  overflow: hidden;
+}
+
+.progress {
+  height: 100%;
+  background: #4caf50;
+}
+
+/* Botão de Voltar */
+.back-button {
+  display: inline-block;
+  margin-top: 20px;
+  padding: 10px 20px;
+  background-color: #007bff;
+  color: white;
+  font-size: 1rem;
+  font-weight: bold;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.back-button:hover {
+  background-color: #0056b3;
+}
+
+/* Mensagem de carregamento */
+.loading {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+}
+</style>
